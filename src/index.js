@@ -85,4 +85,3 @@ function createMarkup(data) {
     .join('');
   document.querySelector('.country-info').innerHTML = markup;
 }
-console.log('Push');
