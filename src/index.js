@@ -20,20 +20,23 @@ function onSearch(evt) {
         Notiflix.Notify.warning(
           'Too many matches found. Please enter a more specific name.'
         );
-      } else if (data.length < 2) {
+        input.value = '';
+        list.innerHTML = '';
+      } else if (data.length === 1) {
         createMarkupExtended(data);
+        input.value = '';
+      } else if (data.length > 1 && data.length < 10) {
+        createMarkup(data);
+        input.value = '';
       } else {
-        const filteredData = data.filter(country => {
-          return country.name.official
-            .toLowerCase()
-            .includes(searchValue.toLowerCase());
-        });
-        createMarkup(filteredData);
+        list.innerHTML = '';
       }
     })
-    .catch(err =>
-      Notiflix.Notify.failure('Oops, there is no country with that name')
-    );
+    .catch(err => {
+      Notiflix.Notify.failure('Oops, there is no country with that name');
+      input.value = '';
+      list.innerHTML = '';
+    });
 }
 
 function debounce(callback, delay) {
@@ -50,13 +53,7 @@ function debounce(callback, delay) {
 
 function createMarkupExtended(data) {
   const [{ name, flags, capital, population, languages }] = data;
-
-  const languagesMarkup = Object.entries(languages)
-    .map(([key, value]) => {
-      return `<li>${key}: ${value}</li>`;
-    })
-    .join('');
-
+  const languagesMarkup = Object.values(languages).join(',');
   const markup = `
       <div style="display: flex; align-items: center; margin-bottom: 10px">
       <img  style="margin-right: 10px" src="${flags.svg}" alt="${flags.alt}" width=50" /> 
@@ -64,24 +61,21 @@ function createMarkupExtended(data) {
       </div> 
       <p style="font-family: 'Roboto', sans-serif; font-size: 18px; font-weight: bold;">Capital: ${capital[0]}</p>
       <p style="font-family: 'Roboto', sans-serif; font-size: 16px">Population: ${population}</p>
-      <h3 style="font-family: 'Roboto', sans-serif; font-size: 16px">Languages:</h3>
-      <ul>${languagesMarkup}</ul>
+      <h3 style="font-family: 'Roboto', sans-serif; font-size: 16px">Languages: ${languagesMarkup}</h3>
   `;
 
   document.querySelector('.country-info').innerHTML = markup;
 }
 
 function createMarkup(data) {
-  const markup = data
-    .map(({ name, flags }) => {
-      return `
+  let markup = '';
+  data.forEach(({ name, flags }) => {
+    markup += `
       <div style="display: flex; align-items: center; margin-bottom: 10px">
-        <img src="${flags.png}" alt="${flags.alt}" style="margin-right: 10px;" height="30" width="50" />  
+        <img src="${flags.png}" alt="${flags.alt}" style="margin-right: 10px;" height="30" width="50" />
         <h2 style="margin: 0; font-family: 'Roboto', sans-serif; font-size: 22px; font-weight: bold;">${name.official}</h2>
-      </div> 
-
-      `;
-    })
-    .join('');
+      </div>
+    `;
+  });
   document.querySelector('.country-info').innerHTML = markup;
 }
