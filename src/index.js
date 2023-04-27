@@ -20,22 +20,14 @@ function onSearch(evt) {
         Notiflix.Notify.warning(
           'Too many matches found. Please enter a more specific name.'
         );
-        input.value = '';
-        list.innerHTML = '';
       } else if (data.length === 1) {
         createMarkupExtended(data);
-        input.value = '';
       } else if (data.length > 1 && data.length < 10) {
         createMarkup(data);
-        input.value = '';
-      } else {
-        list.innerHTML = '';
       }
     })
     .catch(err => {
       Notiflix.Notify.failure('Oops, there is no country with that name');
-      input.value = '';
-      list.innerHTML = '';
     });
 }
 
