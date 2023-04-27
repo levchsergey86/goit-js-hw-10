@@ -1,6 +1,7 @@
 import './css/styles.css';
 import { fetchCountries } from './js/fetchCountries';
 import Notiflix from 'notiflix';
+import debounce from 'lodash.debounce';
 
 const DEBOUNCE_DELAY = 300;
 const input = document.getElementById('search-box');
@@ -31,18 +32,6 @@ function onSearch(evt) {
       Notiflix.Notify.failure('Oops, there is no country with that name');
       list.innerHTML = '';
     });
-}
-
-function debounce(callback, delay) {
-  let timeoutId;
-  return function () {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    timeoutId = setTimeout(() => {
-      callback.apply(this, arguments);
-    }, delay);
-  };
 }
 
 function createMarkupExtended(data) {
